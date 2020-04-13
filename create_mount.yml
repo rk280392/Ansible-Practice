@@ -1,0 +1,9 @@
+---
+- hosts: node00
+  tasks:
+  - name: creating mount point 
+    mount:
+       fstype: ext4
+       src: /dev/vg_sql/lv_data
+       path: /mnt/data
+       state: mounted

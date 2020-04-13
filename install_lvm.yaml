@@ -1,0 +1,6 @@
+- hosts: all
+  tasks:
+  - name: yum
+    yum:
+      name: ["lvm2", "e4fsprogs"]
+      state: present

@@ -1,0 +1,8 @@
+---
+- hosts: node00
+  tasks:
+    - name: create a volume group
+      lvg:
+        vg: vg_sql
+        pvs: /dev/vdb1
+
