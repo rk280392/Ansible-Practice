@@ -1,12 +1,5 @@
 ---
 - hosts: web1
   tasks:
-          - name: Installing firewalld
-            yum:
-                    name: firewalld
-                    state: present
-          - name: starting and enabling firewall
-            service:
-                    name: firewalld
-                    state: started
-                    enabled: yes
+   - yum: name=firewalld state=installed
+   - service: name=firewalld state=started
