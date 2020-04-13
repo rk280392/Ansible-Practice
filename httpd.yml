@@ -1,0 +1,8 @@
+---
+- hosts: web1
+  tasks:
+     - name: Install httpd on web1
+       yum:
+         name: httpd
+         state: present
+  
