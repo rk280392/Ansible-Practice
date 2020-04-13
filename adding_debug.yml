@@ -1,0 +1,15 @@
+---
+- hosts: all
+  become: true
+  become_user: root
+  become_method: sudo
+  tasks:
+          - name: Stopping
+            shell: /usr/local/name.sh > /tmp/1.log 2>&1 #execute script
+            register: appl_check
+          - debug: msg=" script executed succesfully"
+            when: appl_check.rc == 0
+          - name: Logging message
+            command: cat /tmp/1.log
+            register: logmsg
+          - debug: msg="{{ logmsg.stdout_lines }}"

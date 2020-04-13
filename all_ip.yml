@@ -1,0 +1,9 @@
+- hosts: servers
+  tasks:
+      - name: Test for username
+        local_action: shell ssh username@{{ inventory_hostname }} "echo success"
+        register: username_enabled
+      - debug: 
+        msg: "connection failed" 
+        when: username_enabled.stdout == "success" != -1
+     

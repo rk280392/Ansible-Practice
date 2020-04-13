@@ -1,0 +1,32 @@
+---
+- hosts: all
+  become: true
+  become_user: root
+  become_method: sudo
+  tasks:
+          - name: Stopping
+            shell: /usr/local/name.sh > /tmp/1.log 2>&1; cat /tmp/1.log | grep -iw 'failed' > /dev/null; if [$? == 0]; then echo 'ExecutionFa
+iled'; else echo 'Executed'; fi
+            register: appl_check
+          - debug: msg=" script executed succesfully"
+            when: appl_check.stdout == 'Executed'
+          - debug: msg="shell execution failed"
+            when: appl_check.stdout == 'ExecutionFailed'
+          - name: Logging message
+            command: cat /tmp/1.log
+            register: logmsg
+          - debug: msg="{{ logmsg.stdout_lines }}"
+
+          - name: wat for 10 seconds
+            wait_for: timeout=10
+
+          - name: Stopping second service
+            shell: /path/to/script.sh > /tmp/2.log 2>&1; cat /tmp/2.log | grep -iw 'failed' > /dev/null; if [$? == 0]; then echo "SecondFailed"; else echo "SecondExecuted"; fi
+            when appl_check.stdout == 'Executed'
+            register: second_check
+          - debug: msg="second failed"
+            when: second_check.stdout == 'SecondFailed'
+          - name: Log messages for second
+            command: cat /tmp/2.log
+            register:  logmsg1
+            debug: msg="{{ logmsg1.stdout_lines }}"

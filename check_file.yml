@@ -1,0 +1,12 @@
+- hosts: servers
+  tasks:
+  - name: Ansible check file exists.
+    stat:
+      path: /usr/local/username-0.9/nms_monitor/Monitor.php
+    register: p
+  - debug:
+      msg: "File exists..."
+    when: p.stat.exists
+  - debug:
+      msg: "File not found"
+    when: p.stat.exists == False
