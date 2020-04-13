@@ -1,0 +1,8 @@
+---
+- hosts: all
+  tasks:
+          - name: restart and enable httpd service
+            service:
+                    name: httpd
+                    state: started
+                    enabled: yes
