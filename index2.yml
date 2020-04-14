@@ -1,0 +1,12 @@
+---
+- hosts: web1
+  tasks:
+     - name: add lines in html file
+       blockinfile:
+         path: /var/www/html/index.html
+         block: 'Welcome to KodeKloud!
+This is Ansible Lab.'
+         insertbefore: BOF
+         owner: apache
+         group: apache
+   
