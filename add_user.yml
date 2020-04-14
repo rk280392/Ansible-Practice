@@ -1,0 +1,8 @@
+---
+- hosts: all
+  tasks:
+     - name: Create user for Sabin Nepal
+       user:
+          name: neymarsabin
+          expires: 1704067199
+

@@ -1,0 +1,11 @@
+---
+- hosts: all
+  tasks:
+    - name: Create group admin
+      group:
+        name: admin
+    - name: Create admin user
+      user:
+        name: admin
+        group: admin
+        uid: 2048
