@@ -1,9 +1,0 @@
----
-- hosts: web1
-  tasks:
-     - name: create empty file
-       file:
-         path: /opt/data/perm.txt
-         state: touch
-         mode: '0640'
-   
