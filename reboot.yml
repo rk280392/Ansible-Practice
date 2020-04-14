@@ -1,0 +1,8 @@
+---
+- hosts: node00
+  tasks:
+    - name: clean tmp
+      cron:
+         name: "cleanup"
+         special_time: reboot
+         job: rm -rf /tmp/*

@@ -1,0 +1,15 @@
+---
+- hosts: node00
+  tasks:
+   - name: Create cron job
+     cron:
+        name: "Clear Lastlog"
+        job: echo "" > /var/log/lastlog
+        minute: "0"
+        hour: "0"
+        day: "*"
+        month: "*"
+        weekday: "*"
+        
+        
+        

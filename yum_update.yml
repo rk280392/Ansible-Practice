@@ -1,0 +1,17 @@
+---
+- hosts: node00
+  tasks:
+    - name: Adding cron file
+      file:
+        path: /etc/cron.d/ansible_yum
+        state: touch
+        owner: root
+    - name: Creating cron job
+      cron: 
+        name: "yum update"
+        weekday: "0"
+        minute: "05"
+        hour: "8"
+        cron_file: /etc/cron.d/ansible_yum
+        user: root
+        job: yum -y update

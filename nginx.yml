@@ -1,0 +1,25 @@
+---
+- hosts: web1
+  tasks:
+     - name: Installing nginx
+       yum:
+           name: nginx
+           state: present
+     - name: start and enable nginx service
+       service:
+           name: nginx
+           state: started
+           enabled: yes
+     - name: Extracting nginx archive
+       unarchive:
+           src: /root/nginx.zip
+           dest: /usr/share/nginx/html
+           remote_src: yes
+     - name: write into file
+       lineinfile:
+           path: /usr/share/nginx/html/index.html
+           regexp: '^This is simple'
+           insertbefore: '^#This is simple'
+           line: This is KodeKloud Ansible lab.
+ 
+ 
