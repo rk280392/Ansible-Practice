@@ -1,0 +1,12 @@
+---
+- hosts: all
+  gather_facts: no
+  tasks:
+    - name: stat module help to find the file info
+      stat:
+        path: /var/run
+      register: your_variable
+    - debug: var=your_variable.stat.lnk_target
+
+    # your code goes here...
+    - shell: echo "{{your_variable.stat.lnk_target}}" > /tmp/by_ansible
