@@ -1,0 +1,13 @@
+# Inventory File
+
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[web_servers]
+lamp-web ansible_host=172.20.1.100 ansible_user=john httpd_port=80 repository=https://github.com/kodekloudhub/learning-app-ecommerce.git ansible_ssh_private_key_file=/home/thor/.ssh/john
+
+[db_servers]
+lamp-db ansible_host=172.20.1.101 ansible_user=maria  dbname=ecomdb dbpassword=ecompassword dbuser=ecomuser mysql_port=3306 mysqlservice=mysqld ansible_ssh_private_key_file=/home/thor/.ssh/maria
+
+[my_server]
+centos ansible_host=192.168.0.104 ansible_python_interpreter=/bin/python ansible_user=rajesh ansible_ssh_pass=wifi123# httpd_port=80 repository=https://github.com/kodekloudhub/learning-app-ecommerce.git ansible_ssh_private_key_file=/home/thor/.ssh/rajesh 
+ubuntu ansible_host=192.168.0.103  ansible_python_interpreter=/usr/bin/python3 ansible_user=rajesh ansible_ssh_pass=wifi123# httpd_port=80 repository=https://github.com/kodekloudhub/learning-app-ecommerce.git ansible_ssh_private_key_file=/home/thor/.ssh/rajesh

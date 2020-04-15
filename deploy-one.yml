@@ -14,7 +14,7 @@
 
     # Install and Configure Database
 - name: Deploy lamp stack application
-  hosts: lamp-db
+  hosts: all 
   become: yes
   tasks:
     - name: Install MariaDB package
@@ -34,13 +34,17 @@
       service: name=firewalld state=started enabled=yes
 
     - name: insert firewalld rule
-      firewalld: port={{ mysql_port }}/tcp permanent=true state=enabled immediate=yes
+      firewalld: 
+        port: "{{ mysql_port }}" 
+        permanent: true 
+        state: enabled 
+        immediate: yes
 
     - name: Create Application Database
       mysql_db: name={{ dbname }} state=present
 
     - name: Create Application DB User
-      mysql_user: name={{ dbuser }} password={{ dbpassword }} priv=*.*:ALL host='172.20.1.100' state=present
+      mysql_user: name={{ dbuser }} password={{ dbpassword }} priv=*.*:ALL host='192.168.0.104' state=present
 
     - name: Move db-load-script to db host
       copy:
@@ -51,7 +55,7 @@
       shell: mysql -f < /tmp/db-load-script.sql
 
 - name: Deploy lamp stack application
-  hosts: lamp-web
+  hosts: all 
   become: yes
   tasks:
     - name: Install httpd and php
