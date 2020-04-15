@@ -1,14 +1,61 @@
-- name: Deploy lamp stack application
+---
+- hosts: all
   become: yes
-  become_user: root
   become_method: sudo
-  hosts: all
+  become_user: root
   tasks:
-    - name: Install common dependencies
+    - name: Installing common dependency packages
+      yum:
+       name:
+        - libselinux-python
+        - libsemanage-python
+        - firewalld
+       state: present
+
+- hosts: lamp-db
+  become: yes
+  tasks:
+    - name: Install MYSQL-python and mariadb
       yum:
         name:
-          - libselinux-python
-          - libsemanage-python
-          - firewalld
-        state: installed
+          - mariadb-server
+          - MySQL-python
+        state: present
 
+    - name: Copying mysql confg files
+      copy:
+        src: files/my.cnf
+        dest: /etc/my.cnf
+    - name: starting mariadb service
+      service:
+        name: mariadb
+        state: started
+        enabled: yes
+    - name: Starting firewalld service
+      service:
+        name: firewalld
+        state: started
+        enabled: yes
+    - name: Adding firewall rule for mariadb
+      firewalld:
+        port: 3306/tcp
+        zone: public
+        permanent: yes
+        state: enabled
+    - name: Creating app database
+      mysql_db:
+        name: {{ dbname }}
+        state: present 
+    - name: Creating database user
+      mysql_user: 
+        name: {{ dbuser }}
+        password: {{ dbpassword }}
+        host: 172.20.1.100
+        priv: '*.*:ALL'
+    - name: Copy database script
+      copy:
+        src: files/db-load-script.sql
+        dest: /tmp/
+    - name: Loading data into database
+      shell: mysql -f < /tmp/db-load-script.sql
+           
