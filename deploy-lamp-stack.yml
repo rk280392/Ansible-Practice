@@ -1,22 +1,31 @@
 ---
-- hosts: all
+- hosts: centos
   become: yes
   become_method: sudo
   become_user: root
   tasks:
     - name: Installing common dependency packages
-      yum:
-       name:
-        - libselinux-python
-        - libsemanage-python
-        - firewalld
-       state: present
+      package:
+        name:
+          - policycoreutils-python-utils-2.9-3.el8.noarch
+          - python3-libselinux
+          - firewalld
+        state: present
 
-- hosts: lamp-db
+- hosts: my_server
   become: yes
   tasks:
     - name: Install MYSQL-python and mariadb
-      yum:
+      package:
+        name:
+          - mariadb-server
+        state: present
+
+- hosts: my_server
+  become: yes
+  tasks:
+    - name: Install MYSQL-python and mariadb
+      package:
         name:
           - mariadb-server
           - MySQL-python
@@ -41,15 +50,16 @@
         port: 3306/tcp
         zone: public
         permanent: yes
+        immediate: yes
         state: enabled
     - name: Creating app database
       mysql_db:
-        name: {{ dbname }}
-        state: present 
+        name: "{{ dbname }}"
+        state: present
     - name: Creating database user
-      mysql_user: 
-        name: {{ dbuser }}
-        password: {{ dbpassword }}
+      mysql_user:
+        name: "{{ dbuser }}"
+        password: "{{ dbpassword }}"
         host: 172.20.1.100
         priv: '*.*:ALL'
     - name: Copy database script
@@ -58,4 +68,48 @@
         dest: /tmp/
     - name: Loading data into database
       shell: mysql -f < /tmp/db-load-script.sql
-           
+
+- hosts: my_server
+  become: yes
+  tasks:
+    - name: Installing web server
+      package:
+        name:
+          - httpd
+          - php
+          - php-mysql
+          - git
+        state: present
+    - name: Starting firewall service
+      service: 
+        name: firewalld
+        state: started
+        enabled: yes
+    - name: Inserting firewall rule
+      firewalld: port={{ httpd_port }}/tcp state=enabled permanent=yes immediate=yes
+      #    - name: Changing the default page
+      # lineinfile:
+      #  path: /etc/httpd/conf/httpd.conf
+      #  regexp: "^DirectoryIndex "
+      #  insertafter: "^#DirectoryIndex "
+      #  line: DirectoryIndex index.php 
+    - name: Set index.php as the default page
+      tags: "Set index.php as the default page"
+      replace:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: 'DirectoryIndex index.html'
+        replace: 'DirectoryIndex index.php'
+    - name: Restarting httpd service
+      service: 
+        name: httpd
+        state: restarted
+        enabled: yes
+    - name: Cloning git repo
+      git:
+        repo: "{{ repository }}"
+        dest: /var/www/html 
+        force: yes
+    - name: Copy index.php 
+      copy:
+        src: files/index.php
+        dest: /var/www/html/index.php

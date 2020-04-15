@@ -1,0 +1,9 @@
+---
+- hosts: my_server
+  gather_facts: yes
+  become: false
+  tasks:
+          - name: Distribution
+            debug: msg="{{ ansible_distribution }}"
+          - name: Distribution version
+            debug: msg="{{ ansible_distribution_version }}"
