@@ -60,7 +60,6 @@
       mysql_user:
         name: "{{ dbuser }}"
         password: "{{ dbpassword }}"
-        host: "{{ ansible_host }}"
         priv: '*.*:ALL'
     - name: Copy database script
       copy:
@@ -104,6 +103,8 @@
         name: httpd
         state: restarted
         enabled: yes
+    - name: Cleanining up workspace
+      shell: rm -rf /var/www/html/*
     - name: Cloning git repo
       git:
         repo: "{{ repository }}"
